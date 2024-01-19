@@ -5,6 +5,31 @@ This is a thread-safe Java API for Mozilla's [Public Suffix List](https://public
 > A "public suffix" is one under which Internet users can directly register names.
 > Some examples of public suffixes are .com, .co.uk and pvt.k12.ma.us.
 
+# Fork at Lightspeed Systems
+
+This fork adds a single function that can be used as a UDF in snowflake for the purpose of calculating th4 eTLD+1 for a domain.
+
+Build the jar as described below, place it in a stage area (@myStage) and create the function in snowflake:
+
+```
+CREATE FUNCTION etldp1(domain STRING)
+  RETURNS STRING
+  LANGUAGE JAVA
+  IMPORTS = ('@myStage/public-suffix-list-2.2.1-SNAPSHOT.jar',
+        '@myStage/commons-lang3-3.14.0.jar')
+  HANDLER = 'de.malkusch.whoisServerList.publicSuffixList.PublicSuffixUDF.eTLDp1'
+```
+
+With this in place one can call it like so:
+```
+select etldp1("www.google.com")
+-- "google.com"
+```
+
+If the functions encounters trouble (bad domain, unmanaged TLD) then <null> is returned.
+
+A special case results in a panic: a single domain part followed by a period causes a panic.
+Trimming the trailing period or detecting it and returning <null> is on the TODO list.
 
 # Installation
 
