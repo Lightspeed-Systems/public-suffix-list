@@ -82,7 +82,6 @@ public final class PublicSuffixList {
     public String getRegistrableDomain(final String domain) {
         if (StringUtils.isEmpty(domain)) {
             return null;
-
         }
         /*
          * Mozilla's test cases implies that leading dots
@@ -93,6 +92,12 @@ public final class PublicSuffixList {
             return null;
 
         }
+
+        /* single word terminated with a period trips up the lookup - graceful error on such strings */
+        if (domain.matches("^\\w+\\.+$")) {
+            return null;
+        }
+
         PunycodeAutoDecoder punycode = new PunycodeAutoDecoder();
         String decodedDomain = punycode.decode(domain);
 
