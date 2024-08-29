@@ -15,7 +15,7 @@ Build the jar as described below, place it in a stage area (@myStage) and create
 CREATE FUNCTION etldp1(domain STRING)
   RETURNS STRING
   LANGUAGE JAVA
-  IMPORTS = ('@myStage/public-suffix-list-2.2.1-SNAPSHOT.jar',
+  IMPORTS = ('@myStage/public-suffix-list-2.2.2-SNAPSHOT.jar',
         '@myStage/commons-lang3-3.14.0.jar')
   HANDLER = 'de.malkusch.whoisServerList.publicSuffixList.PublicSuffixUDF.eTLDp1'
 ```
